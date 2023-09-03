@@ -1,0 +1,14 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "editor.formatOnSave": false,
+  "appService.zipIgnorePattern": [
+    "node_modules{,/**}",
+    ".vscode{,/**}"
+  ],
+  
+  // "appService.showBuildDuringDeployPrompt": false,
+  // "appService.defaultWebAppToDeploy": "/subscriptions/49c14d5f-6e64-46cd-9685-41e5d2c23032/resourceGroups/Apps/providers/Microsoft.Web/sites/onemillionai",
+  // "appService.deploySubpath": "functions"
+}
