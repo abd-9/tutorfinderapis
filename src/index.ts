@@ -4,9 +4,16 @@ import { UserRoute } from '@routes/users.route';
 import { ValidateEnv } from '@utils/validateEnv';
 import { LinkRoute } from '@routes/links.route';
 import { PaymentRoute } from '@routes/payments.route';
+import { TutorRoute } from '@routes/tutors.route';
 
 ValidateEnv();
 
-const app = new App([new UserRoute(), new AuthRoute(), new LinkRoute(), new PaymentRoute()]);
+const app = new App([new UserRoute(), new AuthRoute(), new TutorRoute(), new LinkRoute(), new PaymentRoute()]);
+process.once('SIGUSR2', function () {
+  process.kill(process.pid, 'SIGUSR2');
+});
 
+process.on('SIGINT', function () {
+  process.kill(process.pid, 'SIGINT');
+});
 app.listen();

@@ -9,7 +9,7 @@ import { UserModel } from '@models/users.model';
 
 const createToken = (user: IUser): TokenData => {
   const dataStoredInToken: DataStoredInToken = { _id: user._id };
-  const expiresIn: number = 60 * 60;
+  const expiresIn: number = 60 * 60000000;
 
   return { expiresIn, token: sign(dataStoredInToken, SECRET_KEY, { expiresIn }) };
 };
@@ -30,7 +30,7 @@ export class AuthService {
     return createUserData;
   }
 
-  public async login(userData: IUser): Promise<{ cookie: string; findUser: IUser }> {
+  public async login(userData: IUser): Promise<{ cookie: string; findUser: IUser; token: string }> {
     const findUser: IUser = await UserModel.findOne({ email: userData.email });
     if (!findUser) throw new HttpException(409, `This email ${userData.email} was not found`);
 
@@ -38,9 +38,10 @@ export class AuthService {
     if (!isPasswordMatching) throw new HttpException(409, 'Password is not matching');
 
     const tokenData = createToken(findUser);
+
     const cookie = createCookie(tokenData);
 
-    return { cookie, findUser };
+    return { cookie, findUser, token: tokenData.token };
   }
 
   public async logout(userData: IUser): Promise<IUser> {

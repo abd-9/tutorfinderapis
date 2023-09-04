@@ -1,5 +1,6 @@
 import { model, Schema, Document } from 'mongoose';
-import { ICustomer, IUser } from '@interfaces/users.interface';
+import { ICustomer, IStudent, ITutor, IUser } from '@interfaces/users.interface';
+import { ReviewSchema } from './review.model';
 
 const UserSchema: Schema = new Schema({
   email: {
@@ -33,3 +34,63 @@ const CustomerSchema: Schema = new Schema({
 });
 
 export const CustomerModel = model<ICustomer & Document>('Customer', CustomerSchema);
+
+const TutorSchema: Schema = new Schema({
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+  },
+  expertises: {
+    type: Number,
+    required: false,
+  },
+  qualifications: {
+    type: [String],
+  },
+  teachingStyle: {
+    type: [String],
+  },
+  flexibility: {
+    type: Boolean,
+    default: false,
+  },
+  country: {
+    type: String,
+    required: false,
+  },
+  availableCities: {
+    required: false,
+    type: [String],
+  },
+  teachLevel: {
+    required: false,
+    type: [String],
+  },
+  reviews: [ReviewSchema],
+});
+
+export const TutorModel = model<ITutor & Document>('Tutor', TutorSchema);
+
+const StudentSchema: Schema = new Schema({
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+  },
+  schoolName: {
+    required: false,
+    type: String,
+  },
+  studentLevel: {
+    required: false,
+    type: String,
+  },
+  country: {
+    type: String,
+    required: false,
+  },
+  city: {
+    required: false,
+    type: String,
+  },
+});
+export const StudentModel = model<IStudent & Document>('Student', StudentSchema);

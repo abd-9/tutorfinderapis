@@ -46,6 +46,7 @@ export class App {
   }
 
   private async connectToDatabase() {
+    set('strictQuery', false);
     if (this.env !== 'production') {
       set('debug', true);
     }

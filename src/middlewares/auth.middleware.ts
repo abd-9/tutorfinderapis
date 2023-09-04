@@ -21,10 +21,11 @@ export const AuthMiddleware = async (req: RequestWithUser, res: Response, next: 
 
     if (Authorization) {
       const { _id } = (await verify(Authorization, SECRET_KEY)) as DataStoredInToken;
-      const findUser = await UserModel.findById(_id);
+      // const findUser = await UserModel.findById(_id);
 
-      if (findUser) {
-        req.user = findUser;
+      // if (findUser) {
+      //   req.user = findUser;
+      if (_id) {
         next();
       } else {
         next(new HttpException(401, 'Wrong authentication token'));
