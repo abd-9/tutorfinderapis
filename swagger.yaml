@@ -1,8 +1,6 @@
 tags:
 - name: users
   description: users API
-- name: link
-  description: links API
 
 paths:
 # [GET] users
@@ -102,21 +100,6 @@ paths:
         500:
           description: 'Server Error'
 
-# [GET] link
-  /links:
-    get:
-      tags:
-      - link
-      summary: Find All links
-      responses:
-        200:
-          description: 'OK'
-        500:
-          description: 'Server Error'
-#  [Post] link
- 
-
-
 # definitions
 definitions:
   users:
@@ -131,5 +114,7 @@ definitions:
       password:
         type: string
         description: user Password
-  
 
+schemes:
+ - https
+ - http
