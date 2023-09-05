@@ -58,7 +58,7 @@ const TutorSchema: Schema = new Schema({
     type: String,
     required: false,
   },
-  availableCities: {
+  cities: {
     required: false,
     type: [String],
   },

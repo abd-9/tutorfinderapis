@@ -39,17 +39,17 @@ export class TutorController {
     }
   };
 
-  // public updateUser = async (req: Request, res: Response, next: NextFunction) => {
-  //   try {
-  //     const userId: string = req.params.id;
-  //     const userData: IUser = req.body;
-  //     const updateUserData: IUser = await this.user.updateUser(userId, userData);
+  public updateTutor = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const tutorId: string = req.params.id;
+      const tutorData: ITutor = req.body;
+      const updateTutorData: ITutor = await this.tutor.updateTutor(tutorId, tutorData);
 
-  //     res.status(200).json({ data: updateUserData, message: 'updated' });
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // };
+      res.status(200).json({ data: updateTutorData, message: 'updated' });
+    } catch (error) {
+      next(error);
+    }
+  };
 
   // public deleteUser = async (req: Request, res: Response, next: NextFunction) => {
   //   try {

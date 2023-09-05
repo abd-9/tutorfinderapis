@@ -23,7 +23,6 @@ export class TutorService {
   }
 
   public async createTutor(tutorData: ITutor): Promise<ITutor> {
-    console.log(tutorData);
     const findUser: ITutor = await TutorModel.findOne({ email: tutorData.email });
     if (findUser) throw new HttpException(409, `This email ${tutorData.email} already exists1`);
     const newUser: IUser = {
@@ -41,21 +40,21 @@ export class TutorService {
     }
   }
 
-  public async updateUser(userId: string, userData: IUser): Promise<IUser> {
-    if (userData.email) {
-      const findUser: IUser = await UserModel.findOne({ email: userData.email });
-      if (findUser && findUser._id != userId) throw new HttpException(409, `This email ${userData.email} already exists`);
+  public async updateTutor(tutorId: string, tutorData: ITutor): Promise<ITutor> {
+    if (tutorData.email) {
+      const findUser: IUser = await UserModel.findOne({ email: tutorData.email });
+      if (findUser && findUser._id != tutorId) throw new HttpException(409, `This email ${tutorData.email} already exists`);
+      else {
+        await TutorModel.findByIdAndUpdate(tutorData.userId, { email: tutorData.email });
+      }
     }
 
-    if (userData.password) {
-      const hashedPassword = await hash(userData.password, 10);
-      userData = { ...userData, password: hashedPassword };
-    }
+    // TODO: have to check if email will be added to the tutor modal then i have to remove the attributes form the object
+    const updatedTutorById: ITutor = await TutorModel.findByIdAndUpdate(tutorId, { ...tutorData });
+    console.log('Aaaaa', updatedTutorById);
+    if (!updatedTutorById) throw new HttpException(409, "Turtor doesn't exist");
 
-    const updateUserById: IUser = await UserModel.findByIdAndUpdate(userId, { ...userData });
-    if (!updateUserById) throw new HttpException(409, "IUser doesn't exist");
-
-    return updateUserById;
+    return updatedTutorById;
   }
 
   public async deleteUser(userId: string): Promise<IUser> {

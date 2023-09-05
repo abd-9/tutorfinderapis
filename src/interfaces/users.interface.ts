@@ -9,7 +9,7 @@ export interface IUser {
 }
 export interface ITutor extends IUser {
   flexibility?: boolean;
-  city?: [string];
+  cities?: [string];
   country?: [string];
   location?: string;
   subjectsTaught?: string[];
