@@ -5,7 +5,7 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "start": "npm run build && cross-env NODE_ENV=production node dist/index.js",
+    "start": "npm run build && NODE_ENV=production NODE_ENV=production node dist/index.js",
     "dev": "cross-env NODE_ENV=development nodemon ",
     "build": "swc src -d dist --source-maps --copy-files",
     "build:tsc": "tsc && tsc-alias",
@@ -35,8 +35,7 @@
     "swagger-ui-express": "^4.5.0",
     "typedi": "^0.10.0",
     "winston": "^3.8.1",
-    "winston-daily-rotate-file": "^4.7.1",
-    "cross-env": "^7.0.3"
+    "winston-daily-rotate-file": "^4.7.1" 
   },
   "devDependencies": {
     "@swc/cli": "^0.1.57",
@@ -57,6 +56,7 @@
     "@types/swagger-ui-express": "^4.1.3",
     "@typescript-eslint/eslint-plugin": "^5.29.0",
     "@typescript-eslint/parser": "^5.29.0",
+    "cross-env": "^7.0.3",
     "eslint": "^8.20.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
