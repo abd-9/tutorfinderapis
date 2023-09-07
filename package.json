@@ -41,11 +41,10 @@
     "winston-daily-rotate-file": "^4.7.1",
     "ts-node": "^10.9.1",
     "tsc-alias": "^1.7.0",
-    "tsconfig-paths": "^4.0.0" 
   
   },
   "devDependencies": {
-   
+    "tsconfig-paths": "^4.0.0",
     "@types/bcrypt": "^5.0.0",
     "@types/compression": "^1.7.2",
     "@types/cookie-parser": "^1.4.3",
