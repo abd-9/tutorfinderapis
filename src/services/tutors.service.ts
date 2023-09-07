@@ -1,23 +1,24 @@
-import { hash } from 'bcrypt';
 import { Service } from 'typedi';
 import { HttpException } from '@exceptions/httpException';
 import { ITutor, IUser } from '@interfaces/users.interface';
 import { TutorModel, UserModel } from '@models/users.model';
 import { Container } from 'typedi';
 import { UserService } from './users.service';
+import { RESPONSE_STATUS } from '@exceptions/httpException';
+import { IReview } from '@/models/review.model';
 
 @Service()
 export class TutorService {
   public userServices = Container.get(UserService);
 
-  // public async findAllUser(): Promise<IUser[]> {
-  //   const users: IUser[] = await UserModel.find();
-  //   return users;
-  // }
+  public async findAllTutor(): Promise<ITutor[]> {
+    const tutors: ITutor[] = await TutorModel.find();
+    return tutors;
+  }
 
   public async findTutorById(tutorId: string): Promise<ITutor> {
     const findTutor: ITutor = await TutorModel.findOne({ _id: tutorId });
-    if (!findTutor) throw new HttpException(409, "IUser doesn't exist");
+    if (!findTutor) throw new HttpException(409, "Tutor doesn't exist");
 
     return findTutor;
   }
@@ -32,7 +33,7 @@ export class TutorService {
     };
     const createdUser = await this.userServices.createUser(newUser);
     try {
-      const createUserData: ITutor = await TutorModel.create({ ...tutorData, userId: createdUser._id });
+      const createUserData: ITutor = await TutorModel.create({ ...tutorData, user: createdUser._id });
       return createUserData;
     } catch (ex) {
       this.userServices.deleteUser(createdUser._id);
@@ -45,16 +46,28 @@ export class TutorService {
       const findUser: IUser = await UserModel.findOne({ email: tutorData.email });
       if (findUser && findUser._id != tutorId) throw new HttpException(409, `This email ${tutorData.email} already exists`);
       else {
-        await TutorModel.findByIdAndUpdate(tutorData.userId, { email: tutorData.email });
+        await UserModel.findByIdAndUpdate(tutorData.userId, { email: tutorData.email });
       }
     }
 
     // TODO: have to check if email will be added to the tutor modal then i have to remove the attributes form the object
-    const updatedTutorById: ITutor = await TutorModel.findByIdAndUpdate(tutorId, { ...tutorData });
-    console.log('Aaaaa', updatedTutorById);
+    const updatedTutorById: ITutor = await TutorModel.findByIdAndUpdate(tutorId, { ...tutorData }).populate({
+      path: 'user',
+      model: 'User',
+    });
     if (!updatedTutorById) throw new HttpException(409, "Turtor doesn't exist");
 
     return updatedTutorById;
+  }
+  public async addTutorReview(tutorId: string, tutorReview: IReview): Promise<IReview[]> {
+    const findTutor = await TutorModel.findOne({ id: tutorId });
+    if (!findTutor) throw new HttpException(RESPONSE_STATUS.DoesNotExist, `Tutor dose not exist.`);
+    else {
+      findTutor.reviews.push(tutorReview);
+      await findTutor.save();
+    }
+    // TODO: pagination
+    return findTutor.reviews;
   }
 
   public async deleteUser(userId: string): Promise<IUser> {

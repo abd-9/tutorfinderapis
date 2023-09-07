@@ -2,7 +2,7 @@ import { model, Schema, Document } from 'mongoose';
 
 export interface IReview {
   comment: string;
-  tutor: Schema.Types.ObjectId;
+  tutor?: Schema.Types.ObjectId;
   student: Schema.Types.ObjectId;
   rate: Number;
 }

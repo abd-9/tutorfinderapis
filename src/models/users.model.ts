@@ -36,11 +36,19 @@ const CustomerSchema: Schema = new Schema({
 export const CustomerModel = model<ICustomer & Document>('Customer', CustomerSchema);
 
 const TutorSchema: Schema = new Schema({
-  userId: {
+  // userId: {
+  //   type: Schema.Types.ObjectId,
+  //   ref: 'User',
+  // },
+  user: {
     type: Schema.Types.ObjectId,
     ref: 'User',
   },
   expertises: {
+    type: Number,
+    required: false,
+  },
+  rate: {
     type: Number,
     required: false,
   },
@@ -72,7 +80,11 @@ const TutorSchema: Schema = new Schema({
 export const TutorModel = model<ITutor & Document>('Tutor', TutorSchema);
 
 const StudentSchema: Schema = new Schema({
-  userId: {
+  // userId: {
+  //   type: Schema.Types.ObjectId,
+  //   ref: 'User',
+  // },
+  user: {
     type: Schema.Types.ObjectId,
     ref: 'User',
   },

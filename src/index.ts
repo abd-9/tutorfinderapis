@@ -5,10 +5,10 @@ import { ValidateEnv } from '@utils/validateEnv';
 import { LinkRoute } from '@routes/links.route';
 import { PaymentRoute } from '@routes/payments.route';
 import { TutorRoute } from '@routes/tutors1.route';
+import { StudentRoute } from './routes/students.route';
 
 ValidateEnv();
-console.log(new AuthRoute(), new TutorRoute());
-const app = new App([new UserRoute(), new AuthRoute(), new TutorRoute(), new LinkRoute(), new PaymentRoute()]);
+const app = new App([new UserRoute(), new AuthRoute(), new TutorRoute(), new LinkRoute(), new PaymentRoute(), new StudentRoute()]);
 process.once('SIGUSR2', function () {
   process.kill(process.pid, 'SIGUSR2');
 });

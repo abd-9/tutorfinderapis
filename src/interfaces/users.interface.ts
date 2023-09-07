@@ -8,21 +8,27 @@ export interface IUser {
   name: string;
 }
 export interface ITutor extends IUser {
+  _id?: string;
   flexibility?: boolean;
   cities?: [string];
   country?: [string];
   location?: string;
+  rate?: number;
   subjectsTaught?: string[];
   qualifications?: string[];
   teachingStyle?: string[];
-  userId: string; // Reference to the User model
+  userId?: string; // Reference to the User model
+  user?: IUser;
   reviews?: IReview[]; // Array of embedded reviews
 }
 
 export interface IStudent extends IUser {
+  _id?: string;
   flexibility?: boolean;
   studyLevel?: string;
   location?: string;
+  userId?: string;
+  user?: IUser;
   schoolName?: string;
 }
 export interface ICustomer {

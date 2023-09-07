@@ -1,4 +1,4 @@
-import { IsEmail, IsString, IsNotEmpty, MinLength, MaxLength, IsOptional, IsBoolean, IsArray, IsMongoId } from 'class-validator';
+import { IsEmail, IsString, IsNotEmpty, MinLength, MaxLength, IsOptional, IsBoolean, IsArray, IsMongoId, IsNumber } from 'class-validator';
 
 export class CreateUserDto {
   @IsEmail()
@@ -69,4 +69,89 @@ export class UpdateTutorDto {
 
   @IsMongoId()
   userId: string;
+}
+export class UpdateStudentDto {
+  @IsEmail()
+  @IsOptional()
+  public email?: string;
+
+  @IsString()
+  @IsOptional()
+  public name?: string;
+
+  @IsString()
+  @IsOptional()
+  @MinLength(6)
+  public password?: string;
+
+  @IsString()
+  @IsOptional()
+  public schoolName?: string;
+
+  @IsString()
+  @IsOptional()
+  public studentLevel?: string;
+
+  @IsString()
+  @IsOptional()
+  public country?: string;
+
+  @IsString()
+  @IsOptional()
+  public city?: string;
+
+  @IsOptional()
+  @IsString()
+  location?: string;
+
+  @IsMongoId()
+  userId: string;
+}
+export class CreateStudentDto {
+  @IsEmail()
+  public email?: string;
+
+  @IsString()
+  public name?: string;
+
+  @IsString()
+  @MinLength(6)
+  public password?: string;
+
+  @IsString()
+  @IsOptional()
+  public schoolName?: string;
+
+  @IsString()
+  @IsOptional()
+  public studentLevel?: string;
+
+  @IsString()
+  @IsOptional()
+  public country?: string;
+
+  @IsString()
+  @IsOptional()
+  public city?: string;
+
+  @IsOptional()
+  @IsString()
+  location?: string;
+
+  @IsMongoId()
+  userId: string;
+}
+
+export class ReviewDto {
+  @IsString()
+  @IsNotEmpty()
+  public comment: string;
+
+  @IsMongoId()
+  @IsNotEmpty()
+  public studentId: string;
+
+  @IsNumber()
+  @IsOptional()
+  public rate: string;
 }
