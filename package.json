@@ -5,7 +5,7 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "start": "npm run build && cross-env NODE_ENV=production node dist/index.js",
+    "start": "npm run build  --loglevel=verbose && cross-env NODE_ENV=production node dist/index.js",
     "dev": "cross-env NODE_ENV=development nodemon ",
     "build": "swc src -d dist --source-maps --copy-files",
     "build:tsc": "tsc && tsc-alias",
@@ -37,6 +37,7 @@
     "winston": "^3.8.1", "@swc/cli": "^0.1.57",
     "@swc/core": "^1.2.220",
     "cross-env": "^7.0.3",
+    "pm2": "^5.2.0",
     "winston-daily-rotate-file": "^4.7.1"
   },
   "devDependencies": {
@@ -66,7 +67,6 @@
     "node-config": "^0.0.2",
     "node-gyp": "^9.1.0",
     "nodemon": "^2.0.19",
-    "pm2": "^5.2.0",
     "prettier": "^2.7.1",
     "supertest": "^6.2.4",
     "ts-jest": "^28.0.7",
