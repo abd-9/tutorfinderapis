@@ -9,6 +9,7 @@ import { StudentRoute } from './routes/students.route';
 
 ValidateEnv();
 const app = new App([new UserRoute(), new AuthRoute(), new TutorRoute(), new LinkRoute(), new PaymentRoute(), new StudentRoute()]);
+
 process.once('SIGUSR2', function () {
   process.kill(process.pid, 'SIGUSR2');
 });

@@ -1,5 +1,6 @@
 import { IReview } from '@/models/review.model';
 import { ILink } from './link.interface';
+import { IRequest } from '@/models/request.model';
 
 export interface IUser {
   _id?: string;
@@ -20,6 +21,7 @@ export interface ITutor extends IUser {
   userId?: string; // Reference to the User model
   user?: IUser;
   reviews?: IReview[]; // Array of embedded reviews
+  requests?: IRequest[];
 }
 
 export interface IStudent extends IUser {
@@ -29,6 +31,7 @@ export interface IStudent extends IUser {
   location?: string;
   userId?: string;
   user?: IUser;
+  requests?: IRequest[];
   schoolName?: string;
 }
 export interface ICustomer {

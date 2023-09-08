@@ -75,6 +75,13 @@ const TutorSchema: Schema = new Schema({
     type: [String],
   },
   reviews: [ReviewSchema],
+  requests: [
+    {
+      required: false,
+      type: Schema.Types.ObjectId,
+      ref: 'Request',
+    },
+  ],
 });
 
 export const TutorModel = model<ITutor & Document>('Tutor', TutorSchema);
@@ -104,5 +111,12 @@ const StudentSchema: Schema = new Schema({
     required: false,
     type: String,
   },
+  requests: [
+    {
+      required: false,
+      type: Schema.Types.ObjectId,
+      ref: 'Request',
+    },
+  ],
 });
 export const StudentModel = model<IStudent & Document>('Student', StudentSchema);

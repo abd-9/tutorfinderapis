@@ -20,6 +20,6 @@ export class StudentRoute implements Routes {
     this.router.get(`${this.path}/:id`, this.student.getStudentById);
     this.router.post(`${this.path}`, ValidationMiddleware(CreateUserDto), this.student.createStudent);
     this.router.put(`${this.path}/:id`, ValidationMiddleware(UpdateStudentDto, true), this.student.updateStudent);
-    // this.router.delete(`${this.path}/:id`, this.user.deleteUser);
+    this.router.post(`${this.path}/:studentId/request/:tutorId`, ValidationMiddleware(CreateUserDto), this.student.sendSessionRequest);
   }
 }

@@ -51,6 +51,18 @@ export class StudentController {
     }
   };
 
+  public sendSessionRequest = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const studentId: string = req.params.id;
+      const studentData: IStudent = req.body;
+      const updateStudentData: IStudent = await this.student.updateStudent(studentId, studentData);
+
+      res.status(200).json({ data: updateStudentData, message: 'updated' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   // public deleteUser = async (req: Request, res: Response, next: NextFunction) => {
   //   try {
   //     const userId: string = req.params.id;
