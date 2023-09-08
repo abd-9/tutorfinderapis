@@ -18,7 +18,10 @@ export class StudentService {
   }
 
   public async findStudentById(studentId: string): Promise<IStudent> {
-    const findStudent: IStudent = await StudentModel.findOne({ _id: studentId }).populate('user', 'User');
+    const findStudent: IStudent = await StudentModel.findOne({ _id: studentId }).populate({
+      path: 'user',
+      model: 'User',
+    });
     if (!findStudent) throw new HttpException(409, "Student doesn't exist");
 
     return findStudent;

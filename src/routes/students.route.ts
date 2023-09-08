@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { UserController } from '@controllers/users.controller';
-import { CreateUserDto, ReviewDto, UpdateStudentDto } from '@dtos/users.dto';
+import { CreateUserDto, UpdateStudentDto } from '@dtos/users.dto';
 import { Routes } from '@interfaces/routes.interface';
 import { ValidationMiddleware } from '@middlewares/validation.middleware';
 import { StudentController } from '@/controllers/students.controller';

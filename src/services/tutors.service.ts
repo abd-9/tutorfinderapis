@@ -17,7 +17,10 @@ export class TutorService {
   }
 
   public async findTutorById(tutorId: string): Promise<ITutor> {
-    const findTutor: ITutor = await TutorModel.findOne({ _id: tutorId });
+    const findTutor: ITutor = await TutorModel.findOne({ _id: tutorId }).populate({
+      path: 'user',
+      model: 'User',
+    });
     if (!findTutor) throw new HttpException(409, "Tutor doesn't exist");
 
     return findTutor;
@@ -43,7 +46,10 @@ export class TutorService {
 
   public async updateTutor(tutorId: string, tutorData: ITutor): Promise<ITutor> {
     if (tutorData.email) {
-      const findUser: IUser = await UserModel.findOne({ email: tutorData.email });
+      const findUser: IUser = await UserModel.findOne({ email: tutorData.email }).populate({
+        path: 'user',
+        model: 'User',
+      });
       if (findUser && findUser._id != tutorId) throw new HttpException(409, `This email ${tutorData.email} already exists`);
       else {
         await UserModel.findByIdAndUpdate(tutorData.userId, { email: tutorData.email });
