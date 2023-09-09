@@ -1,5 +1,5 @@
 import { model, Schema, Document } from 'mongoose';
-import { ICustomer, IStudent, ITutor, IUser } from '@interfaces/users.interface';
+import { ICustomer, IStudent, ITutor, IUser, USER_TYPE } from '@interfaces/users.interface';
 import { ReviewSchema } from './review.model';
 
 const UserSchema: Schema = new Schema({
@@ -14,6 +14,11 @@ const UserSchema: Schema = new Schema({
   password: {
     type: String,
     required: true,
+  },
+  type: {
+    type: String,
+    enum: USER_TYPE,
+    default: USER_TYPE.STUDENT,
   },
 });
 

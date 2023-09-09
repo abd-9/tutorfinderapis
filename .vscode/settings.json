@@ -2,7 +2,7 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "editor.formatOnSave": false,
+  "editor.formatOnSave": true,
   "appService.zipIgnorePattern": [
     "node_modules{,/**}",
     ".vscode{,/**}"

@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { Container } from 'typedi';
 import { IStudent } from '@interfaces/users.interface';
 import { StudentService } from '@/services/students.service';
+import { IRequest } from '@/models/request.model';
 
 export class StudentController {
   public student = Container.get(StudentService);
@@ -9,7 +10,6 @@ export class StudentController {
   public getStudents = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const findAllStudent: IStudent[] = await this.student.findAllStudent();
-
       res.status(200).json({ data: findAllStudent, message: 'findAll' });
     } catch (error) {
       next(error);
@@ -53,11 +53,26 @@ export class StudentController {
 
   public sendSessionRequest = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const studentId: string = req.params.id;
-      const studentData: IStudent = req.body;
-      const updateStudentData: IStudent = await this.student.updateStudent(studentId, studentData);
+      const studentId: string = req.params.studentId;
+      const tutorId: string = req.params.tutorId;
+      const requestData: IRequest = req.body;
 
-      res.status(200).json({ data: updateStudentData, message: 'updated' });
+      const createdRequest: IRequest = await this.student.sendSessionRequest(studentId, tutorId, requestData);
+
+      res.status(201).json({ data: createdRequest, message: 'created' });
+    } catch (error) {
+      next(error);
+    }
+  };
+  public updateSessionRequest = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const studentId: string = req.params.requestId;
+
+      const requestData: IRequest = req.body;
+
+      const createdRequest: IRequest = await this.student.updateSesionRequest(studentId, requestData);
+
+      res.status(201).json({ data: createdRequest, message: 'updated' });
     } catch (error) {
       next(error);
     }

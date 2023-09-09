@@ -7,8 +7,9 @@ import { DataStoredInToken, RequestWithUser } from '@interfaces/auth.interface';
 import { UserModel } from '@models/users.model';
 
 const getAuthorization = (req: RequestWithUser) => {
-  const coockie = req.cookies['Authorization'];
-  if (coockie) return coockie;
+  // const coockie = req.cookies['Authorization'];
+
+  // if (coockie) return coockie;
 
   const header = req.header('Authorization');
   if (header) return header.split('Bearer ')[1];
@@ -21,8 +22,12 @@ export const AuthMiddleware = async (req: RequestWithUser, res: Response, next: 
     const Authorization = getAuthorization(req);
 
     if (Authorization) {
-      const { _id } = await verify(Authorization, SECRET_KEY);
+      const { _id, studentId, tutorId } = await verify(Authorization, SECRET_KEY);
+
       if (_id) {
+        res.locals.userId = _id;
+        res.locals.studentId = studentId;
+        res.locals.tutorId = tutorId;
         next();
       } else {
         next(new HttpException(401, 'Wrong authentication token'));

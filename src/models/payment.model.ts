@@ -18,7 +18,6 @@ const PaymentSchema: Schema = new Schema({
   // createdDate: {
   //   type: Date,
   //   required: false,
-  //   // add defualt value after 3 monthes
   // },
 
   subscriber: {

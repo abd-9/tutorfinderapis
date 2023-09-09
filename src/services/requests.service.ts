@@ -6,6 +6,9 @@ import { Container } from 'typedi';
 import { UserService } from './users.service';
 import { RESPONSE_STATUS } from '@exceptions/httpException';
 import { IReview } from '@/models/review.model';
+import RequestModel, { IRequest, ISession, REQUEST_REPETITION, REQUEST_STATUS, SESSION_STATUS, SessionModel } from '@/models/request.model';
+import moment from 'moment';
+import { FilterQuery } from 'mongoose';
 
 @Service()
 export class RequestService {
@@ -57,18 +60,87 @@ export class RequestService {
   //   if (!updatedTutorById) throw new HttpException(409, "Turtor doesn't exist");
   //   return updatedTutorById;
   // }
-  // public async addTutorReview(tutorId: string, tutorReview: IReview): Promise<IReview[]> {
-  //   const findTutor = await TutorModel.findOne({ id: tutorId });
-  //   if (!findTutor) throw new HttpException(RESPONSE_STATUS.DoesNotExist, `Tutor dose not exist.`);
-  //   else {
-  //     findTutor.reviews.push(tutorReview);
-  //     await findTutor.save();
-  //   }
-  //   return findTutor.reviews;
-  // }
-  // public async deleteUser(userId: string): Promise<IUser> {
-  //   const deleteUserById: IUser = await UserModel.findByIdAndDelete(userId);
-  //   if (!deleteUserById) throw new HttpException(409, "IUser doesn't exist");
-  //   return deleteUserById;
-  // }
+  public async createSessions(requestData: IRequest): Promise<ISession[]> {
+    try {
+      const requestId = requestData._id;
+      if (requestData.repetition == REQUEST_REPETITION.ONCE) {
+        const newSession = new SessionModel({
+          request: requestId,
+          startDateTime: requestData.startDateTime,
+          endDateTime: requestData.endDateTime,
+          status: SESSION_STATUS.PENDING,
+        });
+
+        await newSession.save();
+        return [newSession];
+      }
+
+      if (requestData.repetition == REQUEST_REPETITION.DAILY) {
+        const sessions = [];
+        let currentDateTime = new Date(requestData.startDateTime);
+        const repetitionEndDateTime = requestData.endDateTime;
+        while (currentDateTime <= repetitionEndDateTime) {
+          const newSession = new SessionModel({
+            request: requestId,
+            startDateTime: currentDateTime,
+            endDateTime: moment(currentDateTime).set({ hour: requestData.endDateTime.getHours(), minutes: requestData.endDateTime.getMinutes() }),
+            status: SESSION_STATUS.PENDING,
+          });
+
+          sessions.push(newSession);
+          currentDateTime.setDate(currentDateTime.getDate() + 1); // Move to the next day
+        }
+
+        const createdSessions = await SessionModel.insertMany(sessions);
+        return createdSessions;
+      }
+
+      if (requestData.repetition == REQUEST_REPETITION.WEEKLY) {
+        const sessions = [];
+        let currentDateTime = new Date(requestData.startDateTime);
+        const repetitionEndDateTime = requestData.endDateTime;
+        while (currentDateTime <= repetitionEndDateTime) {
+          const newSession = new SessionModel({
+            request: requestId,
+            startDateTime: currentDateTime,
+            endDateTime: moment(currentDateTime).set({ hour: requestData.endDateTime.getHours(), minutes: requestData.endDateTime.getMinutes() }),
+            status: SESSION_STATUS.PENDING,
+          });
+
+          sessions.push(newSession);
+          currentDateTime.setDate(currentDateTime.getDate() + 7); // Move to the next week
+        }
+
+        const createdSessions = await SessionModel.insertMany(sessions);
+        return createdSessions;
+      }
+    } catch (error) {
+      throw new HttpException(RESPONSE_STATUS.InternalServerError, error.message);
+    }
+  }
+  public async getMyRequestsByStatus(objectId: string, requestStatus?: REQUEST_STATUS): Promise<IRequest[]> {
+    try {
+      const query: FilterQuery<IRequest> = {
+        $and: [{ $or: [{ student: objectId }, { tutor: objectId }] }],
+      };
+
+      if (requestStatus) {
+        query.$and.push({ status: requestStatus });
+      }
+
+      const requests = await RequestModel.find(query).populate('sessions');
+
+      // const formattedRequests = requests.map(request => {
+      //   const formattedRequest = {
+      //     _id: request._id,
+      //     ...request,
+      //     sessions: request.sessions,
+      //   };
+      //   return formattedRequest;
+      // });
+      return requests;
+    } catch (error) {
+      throw new HttpException(RESPONSE_STATUS.InternalServerError, error.message);
+    }
+  }
 }

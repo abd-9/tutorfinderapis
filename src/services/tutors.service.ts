@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import { HttpException } from '@exceptions/httpException';
-import { ITutor, IUser } from '@interfaces/users.interface';
+import { ITutor, IUser, USER_TYPE } from '@interfaces/users.interface';
 import { TutorModel, UserModel } from '@models/users.model';
 import { Container } from 'typedi';
 import { UserService } from './users.service';
@@ -25,6 +25,12 @@ export class TutorService {
 
     return findTutor;
   }
+  public async findTutorByUserId(userId: string): Promise<ITutor> {
+    const findTutor: ITutor = await TutorModel.findOne({ user: userId });
+    if (!findTutor) throw new HttpException(409, "Tutor doesn't exist");
+
+    return findTutor;
+  }
 
   public async createTutor(tutorData: ITutor): Promise<ITutor> {
     const findUser: ITutor = await TutorModel.findOne({ email: tutorData.email });
@@ -32,6 +38,7 @@ export class TutorService {
     const newUser: IUser = {
       email: tutorData.email,
       password: tutorData.password,
+      type: USER_TYPE.TUTOR,
       name: tutorData.name,
     };
     const createdUser = await this.userServices.createUser(newUser);

@@ -6,9 +6,18 @@ import { LinkRoute } from '@routes/links.route';
 import { PaymentRoute } from '@routes/payments.route';
 import { TutorRoute } from '@routes/tutors1.route';
 import { StudentRoute } from './routes/students.route';
+import { RequestRoute } from './routes/requests.route';
 
 ValidateEnv();
-const app = new App([new UserRoute(), new AuthRoute(), new TutorRoute(), new LinkRoute(), new PaymentRoute(), new StudentRoute()]);
+const app = new App([
+  new UserRoute(),
+  new AuthRoute(),
+  new TutorRoute(),
+  new LinkRoute(),
+  new PaymentRoute(),
+  new StudentRoute(),
+  new RequestRoute(),
+]);
 
 process.once('SIGUSR2', function () {
   process.kill(process.pid, 'SIGUSR2');

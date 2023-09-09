@@ -7,7 +7,15 @@ export interface IUser {
   email: string;
   password: string;
   name: string;
+  type: USER_TYPE;
 }
+
+export enum USER_TYPE {
+  ADMIN = 1,
+  STUDENT = 2,
+  TUTOR = 3,
+}
+
 export interface ITutor extends IUser {
   _id?: string;
   flexibility?: boolean;

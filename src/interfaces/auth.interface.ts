@@ -3,6 +3,8 @@ import { IUser } from '@interfaces/users.interface';
 
 export interface DataStoredInToken {
   _id: string;
+  studentId: string;
+  tutorId: string;
 }
 
 export interface TokenData {

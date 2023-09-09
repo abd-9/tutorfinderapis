@@ -2,9 +2,12 @@ import { NextFunction, Request, Response } from 'express';
 import { Container } from 'typedi';
 import { IUser } from '@interfaces/users.interface';
 import { UserService } from '@services/users.service';
+import { RequestService } from '@/services/requests.service';
+import { IRequest, REQUEST_STATUS } from '@/models/request.model';
 
 export class UserController {
   public user = Container.get(UserService);
+  public requestService = Container.get(RequestService);
 
   public getUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -45,6 +48,19 @@ export class UserController {
       const updateUserData: IUser = await this.user.updateUser(userId, userData);
 
       res.status(200).json({ data: updateUserData, message: 'updated' });
+    } catch (error) {
+      next(error);
+    }
+  };
+  public getMyRequsetsByStatus = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId: string = res.locals.userId;
+      const tutorId: string = res.locals.tutorId;
+      const studentId: string = res.locals.studentId;
+      const requestStatus = req.params?.requsetStatus as unknown as REQUEST_STATUS;
+      const myRequests: IRequest[] = await this.requestService.getMyRequestsByStatus(tutorId || studentId, requestStatus);
+
+      res.status(200).json({ data: myRequests });
     } catch (error) {
       next(error);
     }

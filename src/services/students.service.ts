@@ -1,13 +1,17 @@
 import { Service } from 'typedi';
-import { HttpException } from '@exceptions/httpException';
-import { IStudent, IUser } from '@interfaces/users.interface';
-import { StudentModel, UserModel } from '@models/users.model';
+import { HttpException, RESPONSE_STATUS } from '@exceptions/httpException';
+import { IStudent, ITutor, IUser, USER_TYPE } from '@interfaces/users.interface';
+import { StudentModel, TutorModel, UserModel } from '@models/users.model';
 import { Container } from 'typedi';
 import { UserService } from './users.service';
+import RequestModel, { IRequest, REQUEST_STATUS } from '@/models/request.model';
+import { ObjectId } from 'mongoose';
+import { TutorService } from './tutors.service';
 
 @Service()
 export class StudentService {
   public userServices = Container.get(UserService);
+  public tutorServeres = Container.get(TutorService);
 
   public async findAllStudent(): Promise<IStudent[]> {
     const students: IStudent[] = await StudentModel.find().populate({
@@ -26,14 +30,21 @@ export class StudentService {
 
     return findStudent;
   }
+  public async findStudentByUserId(userId: string): Promise<IStudent> {
+    const findStudent: IStudent = await StudentModel.findOne({ user: userId });
+    if (!findStudent) throw new HttpException(409, "Student doesn't exist");
+
+    return findStudent;
+  }
 
   public async createStudent(studentData: IStudent): Promise<IStudent> {
-    const findUser: IStudent = await StudentModel.findOne({ email: studentData.email });
+    const findUser: IUser = await UserModel.findOne({ email: studentData.email });
     if (findUser) throw new HttpException(409, `This email ${studentData.email} already exists`);
     const newUser: IUser = {
       email: studentData.email,
       password: studentData.password,
       name: studentData.name,
+      type: USER_TYPE.STUDENT,
     };
 
     const createdUser = await this.userServices.createUser(newUser);
@@ -42,6 +53,43 @@ export class StudentService {
       return createUserData;
     } catch (ex) {
       this.userServices.deleteUser(createdUser._id);
+      throw new HttpException(409, ex.message);
+    }
+  }
+  public async sendSessionRequest(tutorId: string, studentId: string, requestData: IRequest): Promise<IRequest> {
+    // const findTutor: ITutor = await this.tutorServeres.findTutorById(tutorId);
+    const formatedRequest: IRequest = {
+      ...requestData,
+      student: studentId as unknown as ObjectId,
+      tutor: tutorId as unknown as ObjectId,
+    };
+
+    try {
+      const createdRequest = await this.createSesionRequest(formatedRequest);
+      return createdRequest;
+      // await TutorModel.findOneAndUpdate({ _id: tutorId }, { $push: { requests: createdRequest._id } }, { new: true });
+      // await StudentModel.findByIdAndUpdate(studentId, { $push: { requests: createdRequest._id } });
+    } catch (ex) {
+      throw new HttpException(409, ex.message);
+    }
+  }
+
+  public async createSesionRequest(requestData: IRequest): Promise<IRequest> {
+    try {
+      const createdRequest: IRequest = await RequestModel.create({ ...requestData });
+      return createdRequest;
+    } catch (ex) {
+      throw new HttpException(409, ex.message);
+    }
+  }
+  public async updateSesionRequest(requestId, requestData: IRequest): Promise<IRequest> {
+    try {
+      const updatedRequest: IRequest = await RequestModel.findByIdAndUpdate(requestId, { ...requestData }, { new: true }).populate({
+        path: 'sessions',
+        model: 'Session',
+      });
+      return updatedRequest;
+    } catch (ex) {
       throw new HttpException(409, ex.message);
     }
   }
