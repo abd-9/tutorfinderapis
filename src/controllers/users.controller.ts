@@ -57,7 +57,8 @@ export class UserController {
       const userId: string = res.locals.userId;
       const tutorId: string = res.locals.tutorId;
       const studentId: string = res.locals.studentId;
-      const requestStatus = req.params?.requsetStatus as unknown as REQUEST_STATUS;
+      const requestStatus = req.params?.requestStatus;
+
       const myRequests: IRequest[] = await this.requestService.getMyRequestsByStatus(tutorId || studentId, requestStatus);
 
       res.status(200).json({ data: myRequests });
@@ -65,7 +66,21 @@ export class UserController {
       next(error);
     }
   };
+  public updateRequestStatus = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId: string = res.locals.userId;
+      const tutorId: string = res.locals.tutorId;
+      const studentId: string = res.locals.studentId;
+      const requestStatus = req.params?.requestStatus;
+      const requestId = req.params?.requestId;
 
+      const myRequests: IRequest = await this.requestService.updateRequestStatus(requestId, requestStatus);
+
+      res.status(200).json({ data: myRequests });
+    } catch (error) {
+      next(error);
+    }
+  };
   public deleteUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId: string = req.params.id;

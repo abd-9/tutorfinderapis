@@ -6,21 +6,43 @@ import { Container } from 'typedi';
 import { UserService } from './users.service';
 import { RESPONSE_STATUS } from '@exceptions/httpException';
 import { IReview } from '@/models/review.model';
+import moment from 'moment';
 
 @Service()
 export class TutorService {
   public userServices = Container.get(UserService);
 
   public async findAllTutor(): Promise<ITutor[]> {
-    const tutors: ITutor[] = await TutorModel.find();
+    const tutors: ITutor[] = await TutorModel.find()
+      .populate({
+        path: 'user',
+        model: 'User',
+      })
+      .populate({
+        path: 'reviews',
+        populate: {
+          path: 'user',
+          model: 'User',
+          select: 'name',
+        },
+      });
     return tutors;
   }
 
   public async findTutorById(tutorId: string): Promise<ITutor> {
-    const findTutor: ITutor = await TutorModel.findOne({ _id: tutorId }).populate({
-      path: 'user',
-      model: 'User',
-    });
+    const findTutor: ITutor = await TutorModel.findOne({ _id: tutorId })
+      .populate({
+        path: 'user',
+        model: 'User',
+      })
+      .populate({
+        path: 'reviews',
+        populate: {
+          path: 'user',
+          model: 'User',
+          select: 'name',
+        },
+      });
     if (!findTutor) throw new HttpException(409, "Tutor doesn't exist");
 
     return findTutor;
@@ -62,20 +84,31 @@ export class TutorService {
         await UserModel.findByIdAndUpdate(tutorData.userId, { email: tutorData.email });
       }
     }
+    if (tutorData.name) await UserModel.findByIdAndUpdate(tutorData.userId, { name: tutorData.name });
 
     // TODO: have to check if email will be added to the tutor modal then i have to remove the attributes form the object
-    const updatedTutorById: ITutor = await TutorModel.findByIdAndUpdate(tutorId, { ...tutorData }).populate({
-      path: 'user',
-      model: 'User',
-    });
+    const updatedTutorById: ITutor = await TutorModel.findByIdAndUpdate(tutorId, { ...tutorData }, { new: true })
+      .populate({
+        path: 'user',
+        model: 'User',
+      })
+      .populate({
+        path: 'reviews',
+        populate: {
+          path: 'user',
+          model: 'User',
+          select: 'name', // Only select the 'name' field from the 'User' model
+        },
+      });
     if (!updatedTutorById) throw new HttpException(409, "Turtor doesn't exist");
 
     return updatedTutorById;
   }
   public async addTutorReview(tutorId: string, tutorReview: IReview): Promise<IReview[]> {
-    const findTutor = await TutorModel.findOne({ id: tutorId });
+    const findTutor = await TutorModel.findOne({ _id: tutorId });
     if (!findTutor) throw new HttpException(RESPONSE_STATUS.DoesNotExist, `Tutor dose not exist.`);
     else {
+      tutorReview.createdDate = new Date();
       findTutor.reviews.push(tutorReview);
       await findTutor.save();
     }

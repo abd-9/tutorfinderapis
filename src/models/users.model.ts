@@ -71,11 +71,23 @@ const TutorSchema: Schema = new Schema({
     type: String,
     required: false,
   },
+  location: {
+    type: String,
+    required: false,
+  },
+  phone: {
+    type: String,
+    required: false,
+  },
   cities: {
     required: false,
     type: [String],
   },
   teachLevel: {
+    required: false,
+    type: [String],
+  },
+  subjectsTaught: {
     required: false,
     type: [String],
   },

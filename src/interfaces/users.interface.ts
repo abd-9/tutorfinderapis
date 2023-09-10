@@ -22,6 +22,7 @@ export interface ITutor extends IUser {
   cities?: [string];
   country?: [string];
   location?: string;
+  phone?: string;
   rate?: number;
   subjectsTaught?: string[];
   qualifications?: string[];

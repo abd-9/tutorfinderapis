@@ -57,7 +57,7 @@ export class StudentController {
       const tutorId: string = req.params.tutorId;
       const requestData: IRequest = req.body;
 
-      const createdRequest: IRequest = await this.student.sendSessionRequest(studentId, tutorId, requestData);
+      const createdRequest: IRequest = await this.student.sendSessionRequest(tutorId, studentId, requestData);
 
       res.status(201).json({ data: createdRequest, message: 'created' });
     } catch (error) {

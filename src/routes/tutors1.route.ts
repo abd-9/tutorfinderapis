@@ -19,7 +19,7 @@ export class TutorRoute implements Routes {
   private initializeRoutes() {
     this.router.get(`${this.path}`, AuthMiddleware, this.tutor.getTutors);
     this.router.get(`${this.path}/:id`, AuthMiddleware, this.tutor.getTutorById);
-    this.router.post(`${this.path}`, AuthMiddleware, ValidationMiddleware(CreateUserDto), this.tutor.createTutor);
+    this.router.post(`${this.path}`, ValidationMiddleware(CreateUserDto), this.tutor.createTutor);
     this.router.put(`${this.path}/:id`, AuthMiddleware, ValidationMiddleware(UpdateTutorDto, true), this.tutor.updateTutor);
     this.router.post(`${this.path}/:id/review`, AuthMiddleware, ValidationMiddleware(ReviewDto, true), this.tutor.addTutorReview);
     this.router.post(`${this.path}/request/:requestId`, AuthMiddleware, this.tutor.acceptRequest);

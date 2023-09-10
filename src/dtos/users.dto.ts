@@ -151,6 +151,10 @@ export class ReviewDto {
   @IsNotEmpty()
   public studentId: string;
 
+  @IsMongoId()
+  @IsNotEmpty()
+  public userId: string;
+
   @IsNumber()
   @IsOptional()
   public rate: string;

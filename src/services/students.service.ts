@@ -101,6 +101,8 @@ export class StudentService {
       else {
         await UserModel.findByIdAndUpdate(studentData.userId, { email: studentData.email });
       }
+    } else {
+      if (studentData.name) await UserModel.findByIdAndUpdate(studentData.userId, { name: studentData.name });
     }
 
     // TODO: have to check if email will be added to the student modal then i have to remove the attributes form the object

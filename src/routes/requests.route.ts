@@ -14,7 +14,8 @@ export class RequestRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.path}`, AuthMiddleware, this.user.getMyRequsetsByStatus);
     this.router.get(`${this.path}/:requestStatus`, AuthMiddleware, this.user.getMyRequsetsByStatus);
+    this.router.get(`${this.path}`, AuthMiddleware, this.user.getMyRequsetsByStatus);
+    this.router.put(`${this.path}/:requestId/:requestStatus`, AuthMiddleware, this.user.updateRequestStatus);
   }
 }

@@ -18,9 +18,9 @@ export class StudentRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.path}`, AuthMiddleware, this.student.getStudents);
+    this.router.get(`${this.path}`, this.student.getStudents);
     this.router.get(`${this.path}/:id`, AuthMiddleware, this.student.getStudentById);
-    this.router.post(`${this.path}`, AuthMiddleware, ValidationMiddleware(CreateUserDto), this.student.createStudent);
+    this.router.post(`${this.path}`, ValidationMiddleware(CreateUserDto), this.student.createStudent);
     this.router.put(`${this.path}/:id`, AuthMiddleware, ValidationMiddleware(UpdateStudentDto, true), this.student.updateStudent);
     this.router.post(
       `${this.path}/:studentId/request/:tutorId`,

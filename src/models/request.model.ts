@@ -27,6 +27,8 @@ export interface IRequest {
   startDateTime?: Date;
   endDateTime?: Date;
   note?: string;
+  teachLevel?: string;
+  subjectsTaught: string[];
   status?: REQUEST_STATUS;
   sessions?: Schema.Types.ObjectId[];
   repetition?: REQUEST_REPETITION;
@@ -56,6 +58,12 @@ const requestSchema = new Schema({
   },
   note: {
     type: String,
+  },
+  teachLevel: {
+    type: String,
+  },
+  subjectsTaught: {
+    type: [String],
   },
   status: {
     type: String,

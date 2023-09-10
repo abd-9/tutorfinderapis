@@ -77,7 +77,7 @@ export class RequestService {
 
       if (requestData.repetition == REQUEST_REPETITION.DAILY) {
         const sessions = [];
-        let currentDateTime = new Date(requestData.startDateTime);
+        const currentDateTime = new Date(requestData.startDateTime);
         const repetitionEndDateTime = requestData.endDateTime;
         while (currentDateTime <= repetitionEndDateTime) {
           const newSession = new SessionModel({
@@ -97,7 +97,7 @@ export class RequestService {
 
       if (requestData.repetition == REQUEST_REPETITION.WEEKLY) {
         const sessions = [];
-        let currentDateTime = new Date(requestData.startDateTime);
+        const currentDateTime = new Date(requestData.startDateTime);
         const repetitionEndDateTime = requestData.endDateTime;
         while (currentDateTime <= repetitionEndDateTime) {
           const newSession = new SessionModel({
@@ -128,7 +128,16 @@ export class RequestService {
         query.$and.push({ status: requestStatus });
       }
 
-      const requests = await RequestModel.find(query).populate('sessions');
+      const requests = await RequestModel.find(query)
+        .populate('sessions')
+        .populate({
+          path: 'student',
+          populate: {
+            path: 'user',
+            model: 'User',
+            select: 'name',
+          },
+        });
 
       // const formattedRequests = requests.map(request => {
       //   const formattedRequest = {
@@ -139,6 +148,24 @@ export class RequestService {
       //   return formattedRequest;
       // });
       return requests;
+    } catch (error) {
+      throw new HttpException(RESPONSE_STATUS.InternalServerError, error.message);
+    }
+  }
+  public async updateRequestStatus(requestId: string, requestStatus?: REQUEST_STATUS): Promise<IRequest> {
+    try {
+      const request = await RequestModel.findByIdAndUpdate(requestId, { status: requestStatus })
+        .populate('sessions')
+        .populate({
+          path: 'student',
+          populate: {
+            path: 'user',
+            model: 'User',
+            select: 'name',
+          },
+        });
+
+      return request;
     } catch (error) {
       throw new HttpException(RESPONSE_STATUS.InternalServerError, error.message);
     }
